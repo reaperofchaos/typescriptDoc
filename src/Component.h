@@ -10,7 +10,7 @@
 
 namespace fs = std::filesystem;
 
-class ComponentFile{
+class Component{
     std::string componentName;
     std::vector<fs::path> componentFiles;
     std::vector<fs::path> reducerFiles;
@@ -19,10 +19,19 @@ class ComponentFile{
     std::vector<fs::path> typeFiles;
 
     public: 
-        ComponentFile(){}
-        ComponentFile(fs::path component){
-            componentName = component.stem();
+        /**
+         * @brief Construct a new Component object
+         * 
+         */
+        Component(){}
 
+        /**
+         * @brief Construct a new Component object
+         * 
+         * @param component a path
+         */
+        Component(fs::path component){
+            componentName = component.stem();
             std::vector<fs::path> foldersInComponent = Directory::findFoldersInDir(component, false);
             for(fs::path folderInComponent: foldersInComponent){
 
@@ -50,6 +59,41 @@ class ComponentFile{
             }
         }
 
+        /**
+         * @brief Get the Components object
+         * 
+         * @return std::vector<fs::path> 
+         */
+        std::vector<fs::path> getComponents(){return this->componentFiles;}
+        /**
+         * @brief Get the Types object
+         * 
+         * @return std::vector<fs::path> 
+         */
+        std::vector<fs::path> getTypes(){return this->typeFiles;}
+        /**
+         * @brief Get the Reducers object
+         * 
+         * @return std::vector<fs::path> 
+         */
+        std::vector<fs::path> getReducers(){return this->reducerFiles;}
+        /**
+         * @brief Get the Selectors object
+         * 
+         * @return std::vector<fs::path> 
+         */
+        std::vector<fs::path> getSelectors(){return this->selectorFiles;}
+        /**
+         * @brief Get the Sagas object
+         * 
+         * @return std::vector<fs::path> 
+         */
+        std::vector<fs::path> getSagas(){return this->sagaFiles;}
+
+        /**
+         * @brief Prints console output for the contents of the component
+         * 
+         */
         void DisplayComponent(){
             std::cout << "Component: " << this->componentName << "\n"; 
             Directory::displayPathList("\tComponent Files", this->componentFiles);

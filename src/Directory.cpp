@@ -85,7 +85,7 @@ std::vector<fs::path> Directory::findInDir(fs::path pathToCheck, bool hidden){
         return folders;
     }
 
-    fs::path Directory::findFolderPath(std::string nameOfFolder, fs::path pathToCheck){
+    fs::path Directory::findFolderPathNested(std::string nameOfFolder, fs::path pathToCheck){
             fs::path found; 
             for(const auto & file : fs::recursive_directory_iterator(pathToCheck)){
                 vector<fs::path> folders = findFoldersInDir(pathToCheck, false);
@@ -102,16 +102,49 @@ std::vector<fs::path> Directory::findInDir(fs::path pathToCheck, bool hidden){
             return found; 
     }
 
+    fs::path Directory::findFolderPath(std::string nameOfFolder, fs::path pathToCheck){
+            fs::path found; 
+            for(const auto & file : fs::directory_iterator(pathToCheck)){
+                vector<fs::path> folders = findFoldersInDir(pathToCheck, false);
+                if(file.path().stem() == nameOfFolder){
+                    std::string parentPath = file.path().parent_path();
 
-    bool Directory::checkIfFolderExists(std::string nameOfFolder, fs::path pathToCheck){
+                    bool isFolder = fs::is_directory(file.path());
+                    if(isFolder){
+                        return file.path(); 
+                    }
+                }
+            }
+            return found; 
+    }
+
+    bool Directory::findFolder(std::string nameOfFolder, fs::path pathToCheck){
         fs::path emptyPath; 
         return (findFolderPath(nameOfFolder, pathToCheck) != emptyPath) ? true: false; 
     }
 
-    fs::path Directory::foundFolderResults(std::string nameOfFolder, fs::path pathToCheck){
+    bool Directory::findFolderNested(std::string nameOfFolder, fs::path pathToCheck){
+        fs::path emptyPath; 
+        return (findFolderPathNested(nameOfFolder, pathToCheck) != emptyPath) ? true: false; 
+    }
+
+    fs::path Directory::findFolderResultsNested (std::string nameOfFolder, fs::path pathToCheck){
         std::cout << "Checking for " << nameOfFolder << " in " << pathToCheck.stem() << "\n"; 
         fs::path sourcePath;
-        bool srcFolderExists = checkIfFolderExists(nameOfFolder, pathToCheck); 
+        bool srcFolderExists = findFolderNested(nameOfFolder, pathToCheck); 
+        sourcePath = findFolderPathNested(nameOfFolder, pathToCheck);
+        if(srcFolderExists){
+            std::cout << "Folder " << nameOfFolder << " found at path " << fs::canonical(sourcePath) << "\n"; 
+        }else{
+            std::cout << "Folder " << nameOfFolder<< " was not found.\n"; 
+        }
+        return sourcePath; 
+    }
+
+    fs::path Directory::findFolderResults (std::string nameOfFolder, fs::path pathToCheck){
+        std::cout << "Checking for " << nameOfFolder << " in " << pathToCheck.stem() << "\n"; 
+        fs::path sourcePath;
+        bool srcFolderExists = findFolder(nameOfFolder, pathToCheck); 
         sourcePath = findFolderPath(nameOfFolder, pathToCheck);
         if(srcFolderExists){
             std::cout << "Folder " << nameOfFolder << " found at path " << fs::canonical(sourcePath) << "\n"; 
@@ -119,7 +152,6 @@ std::vector<fs::path> Directory::findInDir(fs::path pathToCheck, bool hidden){
             std::cout << "Folder " << nameOfFolder<< " was not found.\n"; 
         }
         return sourcePath; 
-
     }
 
     fs::path Directory::findFilePath(std::string nameOfFile, fs::path pathToCheck){

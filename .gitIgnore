@@ -4,3 +4,5 @@ test.tsx
 test2.tsx
 obj
 test
+.vscode
+.DS_Store
