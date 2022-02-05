@@ -8,6 +8,7 @@
 namespace fs = std::filesystem;
 
 class FileType{
+    public:
     fs::path file; 
     std::string filename; 
     std::ifstream in; 
@@ -33,5 +34,8 @@ class FileType{
         }
     }
     virtual void displayType(){};
+    virtual void findImports(){};
+    virtual void findInterface(){};
+    virtual void displayInterfaces(){};
 };
 #endif

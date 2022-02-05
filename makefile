@@ -34,11 +34,15 @@ OBJS=    $(OBJDIR)/main.o \
 		 $(OBJDIR)/EnumType.o\
 		 $(OBJDIR)/Property.o\
 		 ${OBJDIR}/InterfaceType.o\
+		 ${OBJDIR}/ImportType.o\
 
 
 
 all: $(OBJS)
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS)
+
+$(OBJDIR)/ImportType.o:
+	$(CC) -c $(CCFLAGS) $(SRCDIR)/Element/ImportType.cpp -o $(OBJDIR)/ImportType.o
 
 $(OBJDIR)/InterfaceType.o:
 	$(CC) -c $(CCFLAGS) $(SRCDIR)/Element/InterfaceType.cpp -o $(OBJDIR)/InterfaceType.o

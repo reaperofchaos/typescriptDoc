@@ -45,12 +45,10 @@ int main(int argc, char* argv[])
 		std::vector<fs::path> typeFiles = component.getTypes(); 
 		for(fs::path typeFile : typeFiles){
 			FileType* typeFileFile = ComponentFileCreator::fileFactoryMethod("type", typeFile);
-			typeFileFile->readFile();
-			
+			typeFileFile->findInterface();
+			typeFileFile->displayInterfaces();
 		}
 	}
 	
-
-
 	return 0;
 }
