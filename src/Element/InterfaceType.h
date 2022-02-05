@@ -19,6 +19,10 @@ class InterfaceType{
 
     void display(){
         std::cout << "Type Name: " << this->name << "\n"; 
+        for(Property property : this->properties){
+            property.display(); 
+        }
+        std::cout << "\n"; 
     }
 };
 

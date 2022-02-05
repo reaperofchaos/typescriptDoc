@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
 			FileType* typeFileFile = ComponentFileCreator::fileFactoryMethod("type", typeFile);
 			typeFileFile->findInterface();
 			typeFileFile->displayInterfaces();
+			typeFileFile->displayEnums();
 		}
 	}
 	

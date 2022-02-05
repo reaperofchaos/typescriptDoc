@@ -36,6 +36,8 @@ class FileType{
     virtual void displayType(){};
     virtual void findImports(){};
     virtual void findInterface(){};
+    virtual void findEnum(){};
     virtual void displayInterfaces(){};
+    virtual void displayEnums(){}
 };
 #endif

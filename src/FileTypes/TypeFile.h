@@ -24,6 +24,7 @@ class TypeFile: public FileType{
             this->path = path; 
             findImports(); 
             findInterface();
+            findEnum();
         }
 
         //find imports
@@ -65,7 +66,6 @@ class TypeFile: public FileType{
             std::regex interfaceProperty("(\\w+)\\:((?:\\W(?:(?:['\"]\\w?['\"])|(?:\\w+\\[?\\]?))\\W?\\|?)+);");
             std::smatch interfacePropertyMatches; 
             std::string interfaceCode = ""; 
-            std::vector<std::string> interfaceCodes; 
             std::vector<Property> properties = {};
             std::string exported = ""; 
             std::string interfaceName = "";
@@ -75,20 +75,17 @@ class TypeFile: public FileType{
                     bool interfaceStartFound = std::regex_search(line, interfaceStart, startInterface);
                     if(interfaceStartFound){
                         interfaceCode = line; 
-                        // std::cout << "Results from InterfaceStart match" << "\n\n"; 
                         exported = interfaceStart[1];
                         interfaceName = interfaceStart[2];
-                        // std::cout << "Exported:" << ((exported == "export") ? "true" : "false") << "\n";
-                        // std::cout << "Interface Name:" << interfaceName << "\n";
                     }  
                 }else{
                     bool interfaceEndFound = std::regex_search(line, interfaceEnd, endInterface);
                     bool interfacePropertyFound = std::regex_search(line, interfacePropertyMatches, interfaceProperty);
                     interfaceCode += line; 
                     if(interfaceEndFound){
-                        interfaceCodes.push_back(interfaceCode);
                         interfaceCode = ""; 
                         this->interfaces.push_back(InterfaceType(exported == "export", interfaceName, properties)); 
+                        properties.clear(); 
                     }
                     if(interfacePropertyFound){
                         std::string propertyName = interfacePropertyMatches[1];
@@ -103,20 +100,51 @@ class TypeFile: public FileType{
                             propertyValue.erase(0, pos + delimiter.length());
                         }
                         propertyValues.push_back(propertyValue);
-                        // for(std::string p: propertyValues){
-                        //     std::cout << "Value: " << p << "\n"; 
-                        // }
                         properties.push_back(Property(propertyName, propertyValues));
                     }
                 }
             }
-
-            // std::cout << "Displaying interfaces" << "\n"; 
-            // for(std::string interface : interfaceCodes){
-            //     std::cout << interface << "\n";
-            // }
         }
 
+        void findEnum(){
+            std::regex startEnumPattern("(export)\\W+enum\\W+(\\w+)\\W?\\{");
+		    std::smatch foundEnumStart;
+            std::regex endEnumPattern("\\}");
+            std::smatch foundEnumEnd;
+            std::regex enumValuePattern("(\\w+)\\W?=\\W?([\"'].*[\"']),?");
+            std::smatch foundEnumValues;
+            std::string enumCode = ""; 
+            std::string exported;
+            std::string enumName;
+            std::vector<Property> enumValues;
+            for(std::string line: this->lines){
+                if(enumCode == ""){
+                    bool enumStartFound = std::regex_search(line, foundEnumStart, startEnumPattern);
+                    if(enumStartFound){
+                        enumCode = line; 
+                        exported = foundEnumStart[1];
+                        enumName = foundEnumStart[2];
+                    }
+                }
+                if(enumCode != ""){
+                    bool enumEndFound = std::regex_search(line, foundEnumEnd, endEnumPattern);
+                    bool enumValueFound = std::regex_search(line, foundEnumValues, enumValuePattern);
+                    enumCode += line;
+
+                    if(enumValueFound){
+                        std::string propertyName = foundEnumValues[1];
+                        std::string propertyValue = foundEnumValues[2];
+                        enumValues.push_back(Property(propertyName, propertyValue));
+                    }
+
+                    if(enumEndFound){
+                        this->enums.push_back(EnumType(exported == "export", enumName, enumValues));
+                        enumValues.clear();
+                        enumCode = ""; 
+                    }
+                }
+            }
+        }
 
         void displayType(){
             std::cout << path.stem() <<  " is a type file \n" << std::endl;
@@ -133,6 +161,11 @@ class TypeFile: public FileType{
             }
         }
 
+        void displayEnums(){
+            for(EnumType enumType : this->enums){
+                enumType.display();
+            }
+        }
         
 };  
 #endif
