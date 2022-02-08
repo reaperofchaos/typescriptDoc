@@ -11,6 +11,7 @@ class InterfaceType{
     std::vector<Property> properties;
     
     public:
+    InterfaceType(){};
     InterfaceType(bool exported, std::string name, std::vector<Property> properties){
         this->exported = exported; 
         this->name = name; 

@@ -45,9 +45,20 @@ int main(int argc, char* argv[])
 		std::vector<fs::path> typeFiles = component.getTypes(); 
 		for(fs::path typeFile : typeFiles){
 			FileType* typeFileFile = ComponentFileCreator::fileFactoryMethod("type", typeFile);
-			typeFileFile->findInterface();
 			typeFileFile->displayInterfaces();
 			typeFileFile->displayEnums();
+		}
+		// std::vector<fs::path> componentFiles = component.getComponents(); 
+		// for(fs::path componentFile : componentFiles){
+		// 	FileType* reactFile = ComponentFileCreator::fileFactoryMethod("component", componentFile);
+		// }
+		std::vector<fs::path> reducerFiles = component.getReducers(); 
+		std::cout << "Reducers" << "\n"; 
+		for(fs::path reducer : reducerFiles){
+			FileType* reducerFile = ComponentFileCreator::fileFactoryMethod("reducer", reducer);
+			reducerFile->displayInterfaces();
+			reducerFile->displayReduxStore();
+
 		}
 	}
 	

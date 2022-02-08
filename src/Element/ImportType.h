@@ -18,8 +18,8 @@ class ImportType{
         this->imports = imports; 
         this->nodePath = nodePath; 
         this->importPath = fs::current_path(); 
-        std::cout << "import is at " << (fs::canonical(this->importPath)) << "\n"; 
     } 
+    
     void display(){
             std::cout << "Default Import: " << this->defaultImport << "\n";
             std::cout << "imports: ";
@@ -27,7 +27,7 @@ class ImportType{
                         std::cout << import << ", "; 
                     }
             std::cout << "\n"; 
-            std::cout << "Import Path: " << this->importPath << "\n"; 
+            std::cout << "Node Path: " << this->nodePath << "\n"; 
         }
 };
 #endif
