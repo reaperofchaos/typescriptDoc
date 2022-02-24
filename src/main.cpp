@@ -58,7 +58,11 @@ int main(int argc, char* argv[])
 			FileType* reducerFile = ComponentFileCreator::fileFactoryMethod("reducer", reducer);
 			reducerFile->displayInterfaces();
 			reducerFile->displayReduxStore();
-
+		}
+		std::vector<fs::path> componentFiles = component.getComponents(); 
+		for(fs::path cFile : componentFiles){
+			FileType* componentFile = ComponentFileCreator::fileFactoryMethod("component", cFile);
+			componentFile->parseFunction(); 
 		}
 	}
 	

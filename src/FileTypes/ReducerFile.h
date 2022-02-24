@@ -13,11 +13,9 @@ class ReducerFile: public FileType{
             this->path = path; 
             this->findImports(); 
             this->findInterfaces(); 
-            std::cout << "Interface count: " << interfaces.size() << "\n"; 
             this->setReduxStore();
         }
     void setReduxStore(){
-        std::cout << "interface count " << this->interfaces.size() << "\n"; 
         if(this->interfaces.size() > 0){
             this->reduxStoreTypes = this->interfaces.at(0); 
         }
